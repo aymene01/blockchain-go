@@ -23,6 +23,7 @@ jobs:
         run: go build -o ./bin/ ./...
 
   test:
+    needs: build
     name: Run Tests
     runs-on: ubuntu-latest
 
