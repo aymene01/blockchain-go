@@ -6,23 +6,18 @@ on:
   pull_request:
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-   steps:
-     - uses: actions/checkout@v3
-     - uses: actions/setup-go@v4
-       with:
-        go-version: 1.19.3
-    - name: Build
-        run: go build -v ./...
-  
   test:
+    name: Run Tests
     runs-on: ubuntu-latest
-    depends-on: build
+
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-go@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
         with:
-          go-version: 1.19.3
-      - name: Test
-        run: go test -v ./...
+          go-version: 1.17
+
+      - name: Run Tests
+        run: go test ./...
