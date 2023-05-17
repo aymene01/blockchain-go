@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: "*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+   steps:
+     - uses: actions/checkout@v3
+     - uses: actions/setup-go@v4
+       with:
+        go-version: 1.19.3
+    - name: Build
+        run: go build -v ./...
+  
+  test:
+    runs-on: ubuntu-latest
+    depends-on: build
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v4
+        with:
+          go-version: 1.19.3
+      - name: Test
+        run: go test -v ./...
