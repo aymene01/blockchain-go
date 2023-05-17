@@ -5,18 +5,20 @@ import (
 	"os"
 	"strconv"
 	"time"
+
+	bc "github.com/aymene01/go-blockchain/pkg/blockchain"
 )
 
 func main() {
-	var bc Blockchain
+	var memoryBc bc.Blockchain
 
-	genesisBlock := Block{0, time.Now().String(), []Transaction{}, "", ""}
-	genesisBlock.Hash = calculateHash(genesisBlock)
+	genesisBlock := bc.Block{0, time.Now().String(), []bc.Transaction{}, "", ""}
+	genesisBlock.Hash = bc.CalculateHash(genesisBlock)
 
-	bc.addBlock(genesisBlock)
+	memoryBc.AddBlock(genesisBlock)
 
 	for {
-		fmt.Println("Enter sender (or 'q' to quit):")
+		fmt.Println("Enter sender (or 'q' to quit and blocks to list all the blocks):")
 		var sender string
 		fmt.Scanln(&sender)
 
@@ -26,16 +28,27 @@ func main() {
 		}
 
 		if sender == "blocks" {
-			bc := bc.getBlockchain()
+			bc := memoryBc.GetBlockchain()
 
 			for _, block := range bc {
 				fmt.Println("-------------------")
+				if block.Index != 0 {
+					fmt.Println("Transactions:")
+				}
 				for _, transaction := range block.Transactions {
-					fmt.Println("sender:", transaction.Sender)
-					fmt.Println("receiver:", transaction.Receiver)
+					fmt.Println("- Sender:", transaction.Sender)
+					fmt.Println("  Receiver:", transaction.Receiver)
+					fmt.Println("  Amount:", transaction.Amount)
 				}
 				fmt.Println("Hash", block.Hash)
+				if block.Index == 0 {
+					fmt.Println("Genesis block")
+
+				} else {
+					fmt.Println("PrevHash", block.PrevHash)
+				}
 			}
+			fmt.Println("-------------------")
 			continue
 		}
 
@@ -52,10 +65,10 @@ func main() {
 			continue
 		}
 
-		transaction := Transaction{Sender: sender, Receiver: receiver, Amount: amount}
+		transaction := bc.Transaction{Sender: sender, Receiver: receiver, Amount: amount}
 
-		newBlock := generateBlock(bc.chain[len(bc.chain)-1], []Transaction{transaction})
-		bc.addBlock(newBlock)
+		newBlock := bc.GenerateBlock(memoryBc.Chain[len(memoryBc.Chain)-1], []bc.Transaction{transaction})
+		memoryBc.AddBlock(newBlock)
 
 		fmt.Println("Block added!")
 		fmt.Println("Index:", newBlock.Index)

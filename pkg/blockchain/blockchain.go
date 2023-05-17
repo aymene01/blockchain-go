@@ -1,4 +1,4 @@
-package main
+package blockchain
 
 import (
 	"crypto/sha256"
@@ -22,18 +22,18 @@ type Block struct {
 }
 
 type Blockchain struct {
-	chain []Block
+	Chain []Block
 }
 
-func (bc *Blockchain) addBlock(newBlock Block) {
-	bc.chain = append(bc.chain, newBlock)
+func (bc *Blockchain) AddBlock(newBlock Block) {
+	bc.Chain = append(bc.Chain, newBlock)
 }
 
-func (bc *Blockchain) getBlockchain() []Block {
-	return bc.chain
+func (bc *Blockchain) GetBlockchain() []Block {
+	return bc.Chain
 }
 
-func calculateHash(block Block) string {
+func CalculateHash(block Block) string {
 	record := strconv.Itoa(block.Index) + block.Timestamp + block.PrevHash
 	hash := sha256.New()
 	hash.Write([]byte(record))
@@ -41,7 +41,7 @@ func calculateHash(block Block) string {
 	return hex.EncodeToString(hashed)
 }
 
-func generateBlock(prevBlock Block, transactions []Transaction) Block {
+func GenerateBlock(prevBlock Block, transactions []Transaction) Block {
 	var newBlock Block
 	t := time.Now()
 
@@ -49,7 +49,7 @@ func generateBlock(prevBlock Block, transactions []Transaction) Block {
 	newBlock.Timestamp = t.String()
 	newBlock.Transactions = transactions
 	newBlock.PrevHash = prevBlock.Hash
-	newBlock.Hash = calculateHash(newBlock)
+	newBlock.Hash = CalculateHash(newBlock)
 
 	return newBlock
 }
