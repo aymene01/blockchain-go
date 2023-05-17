@@ -12,13 +12,20 @@ import (
 func main() {
 	var memoryBc bc.Blockchain
 
-	genesisBlock := bc.Block{0, time.Now().String(), []bc.Transaction{}, "", ""}
+	genesisBlock := bc.Block{
+		Index:        0,
+		Timestamp:    time.Now().String(),
+		Transactions: []bc.Transaction{},
+		PrevHash:     "",
+		Hash:         "",
+	}
+
 	genesisBlock.Hash = bc.CalculateHash(genesisBlock)
 
 	memoryBc.AddBlock(genesisBlock)
 
 	for {
-		fmt.Println("Enter sender (or 'q' to quit and blocks to list all the blocks):")
+		fmt.Println("Enter sender (or 'q' to quit and 'blocks' to list all the blocks):")
 		var sender string
 		fmt.Scanln(&sender)
 
